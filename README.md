@@ -89,3 +89,14 @@ Post model training and testing (which saves .mat files of activation vectors an
 ### src/VectorHaSH
 * This folder contains all the code related to VectorHaSH (and VectorHaSH+). Essentially, *_wrapper.py contains environments that wrap around the `TowerTaskEnv` created in `src/towertask/env.py`.
 
+## Citation
+```
+@inproceedings{xie2025multi,
+  title={A Multi-Region Brain Model to Elucidate the Role of Hippocampus in Spatially Embedded Decision-Making},
+  author={Yi Xie and Jaedong Hwang and Carlos D. Brody and David W. Tank and Ila R. Fiete},
+  booktitle={Proceedings of the 42nd International Conference on Machine Learning (ICML)},
+  year={2025},
+  url={https://openreview.net/forum?id=sTc83mG2H9}
+}
+```
+
