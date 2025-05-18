@@ -1,0 +1,32 @@
+[build-system]
+# setuptools ≥ 61 understands PEP‑517 & PEP‑660 editable installs
+requires = ["setuptools>=61", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "towertask"
+version = "0.1.0"
+description = "Camera-ready ICML code for the TowerTask experiments"
+readme = "README.md"
+requires-python = ">=3.9"
+
+# runtime dependencies
+dependencies = [
+  "numpy",
+  "scipy",
+  "pandas",
+  "matplotlib",
+  "seaborn",
+  "scikit-learn",
+  "tqdm",
+  "statsmodels",
+  "numba"
+  # add anything else the code imports
+]
+
+[tool.setuptools]
+# tell setuptools we are using the src/ layout
+package-dir = {"" = "src"}
+
+[tool.setuptools.packages.find]
+where = ["src"]
