@@ -12,8 +12,10 @@ FIGURE_DIR = str(REPO_ROOT / "icml-results")
 Path(FIGURE_DIR).mkdir(parents=True, exist_ok=True)
 
 # Default data/cache directory — users may override this if needed
-# DATA_DIR = str(REPO_ROOT / "icml-data")
-DATA_DIR = "/om2/user/xieyi/icml-data"
+# For example:
+# DATA_DIR = "/om2/user/xieyi/icml-data"
+
+DATA_DIR = str(REPO_ROOT / "icml-data")
 Path(DATA_DIR).mkdir(parents=True, exist_ok=True)
 ###################################################################
 
