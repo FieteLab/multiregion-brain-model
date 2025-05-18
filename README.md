@@ -63,7 +63,7 @@ python3 train.py --reset_data --grid_assignment position position position --Np 
 ```
 with changes to $SEED and $lr.
 
-## 📜 Reproducing All Figures from the ICML Paper
+## 🏞️ Reproducing All Figures from the ICML Paper
 ### analysis/
 Post model training and testing (which saves .mat files of activation vectors and other stats), you may reproduce figures shown in the original paper with the corresponding files:
 * `plot_fig2.py`: code for plotting learning metrics (e.g., success rate and steps taken per episode (environment configuration) over time), with the same format as Fig 2.
