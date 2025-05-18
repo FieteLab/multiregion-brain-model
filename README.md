@@ -1,4 +1,3 @@
-# TowerTask
 The code assumes the user is using a GPU. We will update a more robust version with cpu ASAP.
 
 ## To Start
@@ -64,21 +63,7 @@ python3 train.py --reset_data --grid_assignment position position position --Np 
 ```
 with changes to $SEED and $lr.
 
----
-
-## Documentation
-### root
-* `train.py` & `test.py`: rl training/testing on tower task using VectorHsSH (or VectorHaSH+). `test.py` only works with M1-M5, which saves a .mat file for grid cells, place cells, and RNN hidden states representations, as well as other relevant task readouts. The .mat file works with `analysis/` to reproduce figures. Note that `train.py` also calls relevant functions from `test.py` in the end to save a .mat file for M1-M5.
-
-### src/towertask
-* `data.py`: data generation for simulating tower task.
-* `model.py`: model definition with a simple RNN, as well as functions `select_action()` and `finish_episode()`.
-* `utils.py`: helper functions including visualizations.
-* `env.py`: **reinforcement learning** environment for executing the tower task using RNN defined in `model.py`.
-
-### src/VectorHaSH
-* This folder contains all the code related to VectorHaSH (and VectorHaSH+). Essentially, *_wrapper.py contains environments that wrap around the `TowerTaskEnv` created in `src/towertask/env.py`.
-
+## 📜 Reproducing All Figures from the ICML Paper
 ### analysis/
 Post model training and testing (which saves .mat files of activation vectors and other stats), you may reproduce figures shown in the original paper with the corresponding files:
 * `plot_fig2.py`: code for plotting learning metrics (e.g., success rate and steps taken per episode (environment configuration) over time), with the same format as Fig 2.
@@ -90,4 +75,17 @@ Post model training and testing (which saves .mat files of activation vectors an
     * Fig 6: mutual info scatterplot.
 * `non_linear_reduction.py`: code for plotting PCA of hippocampal vectors and RNN vectors.
     * Fig 5, 9, 10: First 2 to 3 PCs visuzlied to various variables and scree plots.
+
+## Further Documentation
+### root
+* `train.py` & `test.py`: rl training/testing on tower task using VectorHsSH (or VectorHaSH+). `test.py` only works with M1-M5, which saves a .mat file for grid cells, place cells, and RNN hidden states representations, as well as other relevant task readouts. The .mat file works with `analysis/` to reproduce figures. Note that `train.py` also calls relevant functions from `test.py` in the end to save a .mat file for M1-M5.
+
+### src/towertask
+* `data.py`: data generation for simulating tower task.
+* `model.py`: model definition with a simple RNN, as well as functions `select_action()` and `finish_episode()`.
+* `utils.py`: helper functions including visualizations.
+* `env.py`: reinforcement learning environment for executing the tower task using RNN defined in `model.py`.
+
+### src/VectorHaSH
+* This folder contains all the code related to VectorHaSH (and VectorHaSH+). Essentially, *_wrapper.py contains environments that wrap around the `TowerTaskEnv` created in `src/towertask/env.py`.
 
