@@ -1,4 +1,4 @@
-The code assumes the user is using a GPU. We will update a more robust version with cpu ASAP.
+The code assumes the user is using a GPU. We will update a more robust version with cpu ASAP. Please reach out or submit Issues for any request.
 
 ## To Start
 First, create and activate a conda environment:
