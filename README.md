@@ -63,7 +63,7 @@ python3 train.py --reset_data --grid_assignment position position position --Np 
 ```
 with changes to $SEED and $lr.
 
-> p.s. For potential confusion, when the assignments of all three grid modules are `position`, we update each module with the MLP-predicted evidence velocity in `train.py` in each step of training. Otherwise, for cases like `--grid assignment position position evidence`, there will be no extra injection of evidence to positional modules. The code currently assumes there are always three grid modules. 
+> p.s. For potential confusion, when the assignments of all three grid modules are `position`, we update each module with the MLP-predicted evidence velocity in `train.py` in each step of training. Otherwise, for cases like `--grid_assignment position position evidence`, there will be no extra injection of evidence to positional modules. The code currently assumes there are always three grid modules. 
 
 ## 🏞️ Reproducing All Figures from the ICML Paper
 ### analysis/
