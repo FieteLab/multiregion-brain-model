@@ -1,3 +1,4 @@
+# A Multi-Region Brain Model to Elucidate the Role of Hippocampus in Spatially Embedded Decision-Making (ICML 2025)
 The code assumes the user is using a GPU. We will update a more robust version with cpu ASAP. Please reach out or submit Issues for any request.
 
 ## To Start
@@ -96,9 +97,8 @@ Post model training and testing (which saves .mat files of activation vectors an
 @inproceedings{xie2025multi,
   title={A Multi-Region Brain Model to Elucidate the Role of Hippocampus in Spatially Embedded Decision-Making},
   author={Yi Xie and Jaedong Hwang and Carlos D. Brody and David W. Tank and Ila R. Fiete},
-  booktitle={Proceedings of the 42nd International Conference on Machine Learning (ICML)},
-  year={2025},
-  url={https://openreview.net/forum?id=sTc83mG2H9}
+  booktitle={ICML},
+  year={2025}
 }
 ```
 
