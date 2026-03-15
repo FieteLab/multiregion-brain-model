@@ -14,6 +14,11 @@ pip install -e .
 ```
 from the root directory (where `pyproject.toml` is located). This allows importing `towertask` and `VectorHaSH` from anywhere.
 
+Lastly, install torch-gpu in the `towertask` conda environment:
+```
+pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu128
+```
+
 ## Modify directories for saving results and data
 Please modify the following in `src/towertask/config.py` to appropriate directories to save your results and data (e.g., models, activation vectors, other task-relevant stats).
 By default, they save under `TowerTask/icml-results` and `TowerTask/icml-data`:
@@ -91,6 +96,32 @@ Post model training and testing (which saves .mat files of activation vectors an
 
 ### src/VectorHaSH
 * This folder contains all the code related to VectorHaSH (and VectorHaSH+). Essentially, *_wrapper.py contains environments that wrap around the `TowerTaskEnv` created in `src/towertask/env.py`.
+
+### Reproducibility Note
+Both M4 and M5 training are relatively instable due to taking in a mixture of sensory and grid cell inputs to learn Whs, Wsh (i.e., the connectivity between the sensory and hippocampus layers). Thus, there's a high run-to-run variation.
+
+> For absolute reproducibility of Fig 2, we have provided the M3, M4, and M5 models trained and presented in the CCN and ICML paper in `ccn_model` folder. 
+```
+'M3: joint g, nonmix p': [
+         'ccn_model/train_q=1/with_mlp_mlp_input_typesensory32/p/HaSH_original/no_sensory/seq20/maxTower5/fov5/RNN32/position_position_position_7_8_11/0.0005/M3_trial_1/800',
+         'ccn_model/train_q=1/with_mlp_mlp_input_typesensory32/p/HaSH_original/no_sensory/seq20/maxTower5/fov5/RNN32/position_position_position_7_8_11/0.0005/M3_trial_2/800',
+         'ccn_model/train_q=1/with_mlp_mlp_input_typesensory32/p/HaSH_original/no_sensory/seq20/maxTower5/fov5/RNN32/position_position_position_7_8_11/0.0005/M3_trial_3/800'
+     ],
+ 'M4: disjoint g, mix p': [
+         'ccn_model/train_q=1/with_mlp_mlp_input_typesensory32/p/HaSH_star/no_sensory/seq20/maxTower5/fov5/RNN32/position_position_evidence_7_8_11/0.0005/M4_trial_{1}/800',
+         'ccn_model/train_q=1/with_mlp_mlp_input_typesensory32/p/HaSH_star/no_sensory/seq20/maxTower5/fov5/RNN32/position_position_evidence_7_8_11/0.0005/M4_trial_2/800',
+         'ccn_model/train_q=1/with_mlp_mlp_input_typesensory32/p/HaSH_star/no_sensory/seq20/maxTower5/fov5/RNN32/position_position_evidence_7_8_11/0.0005/M4_trial_{3}/800',
+     ],
+
+'M5: joint g, mix p': [
+        'ccn_model/train_q=1/with_mlp_mlp_input_typesensory32/p/HaSH_star/no_sensory/seq20/maxTower5/fov5/RNN32/position_position_position_7_8_11/0.0005/M5_trial_1/800',
+        'ccn_model/train_q=1/with_mlp_mlp_input_typesensory32/p/HaSH_star/no_sensory/seq20/maxTower5/fov5/RNN32/position_position_position_7_8_11/0.0005/M5_trial_2/800',
+        'ccn_model/train_q=1/with_mlp_mlp_input_typesensory32/p/HaSH_star/no_sensory/seq20/maxTower5/fov5/RNN32/position_position_position_7_8_11/0.0005/M5_trial_3/800',
+    ],
+```
+
+One way to mitigate the instability issue is to pass in a flag `--modified_mixture`. This means we use only the hippocampal cells projected by g -> h for updating Whs, Wsh, i.e., `torch.relu(p_g)`, instead of using the mix of projection from g and s, i.e., `p_for_update = torch.relu(p_g+p_s)`. 
+
 
 ## Citation
 ```
