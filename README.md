@@ -94,7 +94,7 @@ We recently notice that both M4 and M5 training can be relatively instable due t
     ],
 ```
 
-One way to mitigate the instability issue is to pass in a flag `--modified_mixture`. This means we use only the hippocampal cells projected by g -> h for updating Whs, Wsh, i.e., `torch.relu(p_g)`, instead of using the mix of projection from g and s, i.e., `p_for_update = torch.relu(p_g+p_s)`. 
+In our current development, we found one way to mitigate the instability issue is to pass in a flag `--modified_mixture`. This means we use only the hippocampal cells projected by g -> h for updating Whs, Wsh, i.e., `torch.relu(p_g)`, instead of using the mix of projection from g and s, i.e., `p_for_update = torch.relu(p_g+p_s)`. 
 
 ## 🏞️ Reproducing All Figures from the ICML Paper
 ### analysis/
