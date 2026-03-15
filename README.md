@@ -72,9 +72,9 @@ with changes to $SEED and $lr.
 > p.s. For potential confusion, when the assignments of all three grid modules are `position`, we update each module with the MLP-predicted evidence velocity in `train.py` in each step of training. Otherwise, for cases like `--grid_assignment position position evidence`, there will be no extra injection of evidence velocity to positional modules. The code currently assumes there are always three grid modules. 
 
 ## Reproducibility Note with Trained Models
-Both M4 and M5 training are relatively instable due to taking in a mixture of sensory and grid cell inputs to learn Whs, Wsh (i.e., the connectivity between the sensory and hippocampus layers). Thus, there's a high run-to-run variation.
+We recently notice that both M4 and M5 training can be relatively instable due to taking in a mixture of sensory and grid cell inputs to learn $W_{hs}$, $W_{sh}$ (i.e., the connectivity between the sensory and hippocampus layers). Thus, there's a high run-to-run variation.
 
-> For absolute reproducibility of Fig 2, we have provided the M3, M4, and M5 models trained and presented in the CCN and ICML paper in `ccn_model` folder. 
+> Due to a lack of seed in earlier runs, for absolute reproducibility of Fig 2, we have provided the M3, M4, and M5 models trained and presented in the CCN and ICML paper in `ccn_model` folder. 
 ```
 'M3: joint g, nonmix p': [
          'ccn_model/train_q=1/with_mlp_mlp_input_typesensory32/p/HaSH_original/no_sensory/seq20/maxTower5/fov5/RNN32/position_position_position_7_8_11/0.0005/M3_trial_1/800',
@@ -82,9 +82,9 @@ Both M4 and M5 training are relatively instable due to taking in a mixture of se
          'ccn_model/train_q=1/with_mlp_mlp_input_typesensory32/p/HaSH_original/no_sensory/seq20/maxTower5/fov5/RNN32/position_position_position_7_8_11/0.0005/M3_trial_3/800'
      ],
  'M4: disjoint g, mix p': [
-         'ccn_model/train_q=1/with_mlp_mlp_input_typesensory32/p/HaSH_star/no_sensory/seq20/maxTower5/fov5/RNN32/position_position_evidence_7_8_11/0.0005/M4_trial_{1}/800',
+         'ccn_model/train_q=1/with_mlp_mlp_input_typesensory32/p/HaSH_star/no_sensory/seq20/maxTower5/fov5/RNN32/position_position_evidence_7_8_11/0.0005/M4_trial_1/800',
          'ccn_model/train_q=1/with_mlp_mlp_input_typesensory32/p/HaSH_star/no_sensory/seq20/maxTower5/fov5/RNN32/position_position_evidence_7_8_11/0.0005/M4_trial_2/800',
-         'ccn_model/train_q=1/with_mlp_mlp_input_typesensory32/p/HaSH_star/no_sensory/seq20/maxTower5/fov5/RNN32/position_position_evidence_7_8_11/0.0005/M4_trial_{3}/800',
+         'ccn_model/train_q=1/with_mlp_mlp_input_typesensory32/p/HaSH_star/no_sensory/seq20/maxTower5/fov5/RNN32/position_position_evidence_7_8_11/0.0005/M4_trial_3/800',
      ],
 
 'M5: joint g, mix p': [
