@@ -26,7 +26,7 @@ def smooth_and_threshold_in_time(signal, sigma=1.0, threshold_factor=2.0):
     """
     # 1D Gaussian smoothing across time
     smoothed = gaussian_filter1d(signal, sigma=sigma, 
-                                 mode='reflect',)
+                                 mode='reflect', truncate=2.0)
     
     # Calculate robust sigma. By default, median_abs_deviation returns the MAD,
     # which is approximately sigma * 0.6745. We can simply treat that as "robust sigma"
@@ -458,7 +458,8 @@ def plot_all_neurons_2d_heatmap_with_smoothing(df,
                                 second_smooth_sigma=2,
                                 threshold_factor=2,
                                 apply_first_smoothing=True,
-                                apply_second_smoothing=True):
+                                apply_second_smoothing=True,
+                                num_neurons_to_plot=800):
     """
     Plots a heatmap for every neuron column showing activation as a function
     of position (y-axis) and accumulated evidence (x-axis), divided by the 
@@ -470,9 +471,9 @@ def plot_all_neurons_2d_heatmap_with_smoothing(df,
     """
     if not os.path.exists(output_dir):
         os.makedirs(output_dir)
-    else:
-        shutil.rmtree(output_dir)
-        os.makedirs(output_dir)
+    # else:
+    #     shutil.rmtree(output_dir)
+    #     os.makedirs(output_dir)
     
     # Calculate the occupancy of each (position, evidence) state 
     neuron_cols = [col for col in df.columns if col.startswith('neuron_')]
@@ -480,13 +481,34 @@ def plot_all_neurons_2d_heatmap_with_smoothing(df,
     smoothed_cols_dict = {}
     # 1) (Optional) First smoothing and thresholding across time
     if apply_first_smoothing:
-        for neuron_col in neuron_cols:
-            smoothed_vals = smooth_and_threshold_in_time(
-                df[neuron_col].values,
-                sigma=first_smooth_sigma,
-                threshold_factor=threshold_factor
-            )
-            smoothed_cols_dict[neuron_col + '_smooth'] = smoothed_vals
+        trial_col = 'episode'
+
+        # Precompute groups once
+        episode_indices = [np.asarray(idx) for idx in df.groupby(trial_col, sort=False).groups.values()]
+
+        # Pull all neuron data into one NumPy array: shape (T, N)
+        X = df[neuron_cols].to_numpy(dtype=float)
+        X_smooth = np.empty_like(X)
+
+        for j, neuron_col in enumerate(tqdm(neuron_cols, desc="smoothing")):
+            if j > num_neurons_to_plot:
+                break
+            xj = X[:, j]
+            outj = np.empty_like(xj)
+
+            for idx in episode_indices:
+                outj[idx] = smooth_and_threshold_in_time(
+                    xj[idx],
+                    sigma=first_smooth_sigma,
+                    threshold_factor=threshold_factor
+                )
+
+            X_smooth[:, j] = outj
+
+        for j, neuron_col in enumerate(neuron_cols):
+            if j > num_neurons_to_plot:
+                break
+            smoothed_cols_dict[neuron_col + '_smooth'] = X_smooth[:, j]
     else:
         # If not applying smoothing, just copy the original signals
         for neuron_col in neuron_cols:
@@ -496,6 +518,8 @@ def plot_all_neurons_2d_heatmap_with_smoothing(df,
 
     # For each neuron, calculate mean activation over average occupancy
     for i, neuron_col in enumerate(neuron_cols):
+        if i > num_neurons_to_plot:
+            break
         smoothed_col = neuron_col + '_smooth'
         # Merge neuron activation with occupancy
         if method == 'mean':
@@ -534,12 +558,12 @@ def plot_all_neurons_2d_heatmap_with_smoothing(df,
         ax.tick_params(axis='y', labelsize=14)
 
         # Save the plot
-        plot_path = os.path.join(output_dir, f'{neuron_col}_heatmap.png')
+        plot_path = os.path.join(output_dir, f'{neuron_col}_heatmap_smooth.png')
         plt.savefig(plot_path, bbox_inches='tight')
         plt.close()  # Close the figure
-        # print(f'Saved heatmap for {neuron_col} to {plot_path}')
+        print(f'Saved heatmap for {neuron_col} to {plot_path}')
 
-def plot_all_neurons_2d_heatmap(df, output_dir='', normalize_stage='after', method='sum'):
+def plot_all_neurons_2d_heatmap(df, output_dir='', normalize_stage='after', method='sum', num_neurons_to_plot=800):
     """
     Plots a heatmap for every neuron column showing activation as a function
     of position (y-axis) and accumulated evidence (x-axis), divided by the 
@@ -557,8 +581,11 @@ def plot_all_neurons_2d_heatmap(df, output_dir='', normalize_stage='after', meth
     occupancy = df.groupby(['position', 'accumulated_evidence']).size().reset_index(name='occupancy')
 
     # For each neuron, calculate mean activation over average occupancy
+    counter = 0
     for neuron_col in tqdm([col for col in df.columns if col.startswith('neuron_')], 
                         desc="Plotting heatmap for individual neurons..."):
+        if counter > num_neurons_to_plot:
+            break
         # Merge neuron activation with occupancy
         if method == 'mean':
             # define each combo of E x Y as a group, then compute the mean specified by neuron_col within the group
@@ -570,7 +597,7 @@ def plot_all_neurons_2d_heatmap(df, output_dir='', normalize_stage='after', meth
 
         activation_pivot = neuron_data.pivot(index='position', columns='accumulated_evidence', values=neuron_col)
         plt.figure()
-        ax = sns.heatmap(activation_pivot, cmap='jet', square=True, cbar_kws={'label': 'Average Activation'})
+        ax = sns.heatmap(activation_pivot, cmap='viridis', square=True, cbar_kws={'label': 'Average Activation'})
         ax.invert_yaxis()  # Invert the y-axis
         plt.title(f'{neuron_col}')
         ax.set_yticks([0, 19])
@@ -584,7 +611,8 @@ def plot_all_neurons_2d_heatmap(df, output_dir='', normalize_stage='after', meth
         plot_path = os.path.join(output_dir, f'{neuron_col}_heatmap.png')
         plt.savefig(plot_path, bbox_inches='tight')
         plt.close()
-        # print(f'Saved heatmap for {neuron_col} to {plot_path}')
+        counter += 1
+        print(f'Saved heatmap for {neuron_col} to {plot_path}')
 
 def plot_neuron_activity_by_position_schematic(df, neuron_column_index, output_dir=''):
     """
@@ -889,7 +917,7 @@ def analyze_neural_preference_and_encoding(df, path, load_shuffle=True, num_shuf
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='Tower Task Testing with GridWrapper')
     parser.add_argument('--model_type', type=str, required=False, help='choose from M1-M5')
-    parser.add_argument('--num_episodes', type=int, required=False, default=1000, help='Num of episodes saved')
+    parser.add_argument('--num_episodes', type=int, required=False, default=500, help='Num of episodes saved')
     args = parser.parse_args()
 
     """Data processing"""
@@ -900,10 +928,10 @@ if __name__ == "__main__":
     elif args.model_type == 'M3':
         format_path = '...' # TODO: user enters
     elif args.model_type == 'M4':
-        format_path = '...' # TODO: user enters
+        format_path = 'M4/mlp32/p/no_sensory/HaSH_star/seq20/maxTower5/RNN32/7_8_11/0.0005/icml_M4_trial_1_lr0.0005/800/' # TODO: user enters
     elif args.model_type == 'M5':
         # for example...
-        format_path = 'M5/mlp32/p/no_sensory/HaSH_star/seq20/maxTower5/RNN32/7_8_11/0.0005/trial_debug/800/' 
+        format_path = 'M5/mlp32/p/no_sensory/HaSH_star/seq20/maxTower5/RNN32/7_8_11/0.0005/icml_M5_trial_1_lr0.0005/800/' 
 
     save_path = os.path.join(DATA_DIR, format_path)
     plot_path = os.path.join(FIGURE_DIR, format_path)
@@ -934,18 +962,21 @@ if __name__ == "__main__":
     print('Averaged out same (episode, position)', df.shape)
     
     """ 1) plot, for each neuron, normalized average activity in E x Y space """
-    plot_all_neurons_2d_heatmap(df, output_dir=os.path.join(plot_path, '2d_neurons'), method='mean')
-
+    plot_all_neurons_2d_heatmap(df, output_dir=os.path.join(plot_path, '2d_neurons'), method='mean',
+                                num_neurons_to_plot=10)
     # OPTIONAL: YOU MAY ALSO SMOOTH ACTIVATION HEATMAP USING (appeared in ICML rebuttal stage and added to appendices)
     ## `plot_all_neurons_2d_heatmap_with_smoothing`
-    
+
+    plot_all_neurons_2d_heatmap_with_smoothing(df, output_dir=os.path.join(plot_path, '2d_neurons'), 
+                                                method='mean', num_neurons_to_plot=10)
+    breakpoint()
     """ 2) plot, with all neuron, normalized activity grouped by evidence value """
     plot_neuron_evidence_activation_heatmap(df, output_dir=os.path.join(plot_path, "evidence_field"))
 
     """ 3) compute M.I. wrt evi, pos, and joint evi + pos; the shuffled result is saved to .pkl for reuse
     ## Determine neuron preference based on mutual information significance
     ## Plot joint wrt one variable being randomnized """
-    analyze_neural_preference_and_encoding(df, os.path.join(plot_path, 'mutual_information'), load_shuffle=False, num_shuffles=10)
+    analyze_neural_preference_and_encoding(df, os.path.join(plot_path, 'mutual_information'), load_shuffle=False, num_shuffles=3)
     
     """3.5) Using computed M.I. wrt evi from above, check each neuron's evidence preference"""
     analyze_neural_evidence_encoding(df, os.path.join(plot_path, 'mutual_information'), load_shuffle=True)
@@ -961,7 +992,7 @@ if __name__ == "__main__":
 
     # OPTIONAL: Plot activation heatmap individually in a loop; this overlaps plot_all_neurons_2d_heatmap with more customization for selected neurons.
     # for i in range(400):
-        # plot_2d_neuron_heatmap(df, i, plot_path)
-        # plot_3d_neuron_activation(df, i, plot_path)
+    #     plot_2d_neuron_heatmap(df, i, plot_path)
+    #     plot_3d_neuron_activation(df, i, plot_path)
 
     
