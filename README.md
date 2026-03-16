@@ -94,7 +94,7 @@ We recently notice that M3, M4 and M5 training can be relatively instable, with 
     ],
 ```
 
-### Fig. 6 
+## Fig. 6 
 Additionally, we provide the data used to produce Fig. 6 in `Fig6_data`. You may use it to run `analysis/non_linear_reduction` to obtain our results.
 
 The original `.mat` files for Fig. 6 are stored in a compressed archive to keep the repository size manageable.
