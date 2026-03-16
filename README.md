@@ -72,7 +72,7 @@ with changes to $SEED and $lr.
 > p.s. For potential confusion, when the assignments of all three grid modules are `position`, we update each module with the MLP-predicted evidence velocity in `train.py` in each step of training. Otherwise, for cases like `--grid_assignment position position evidence`, there will be no extra injection of evidence velocity to positional modules. The code currently assumes there are always three grid modules. 
 
 ## Fig. 3
-We recently notice that M3, M4 and M5 training can be relatively instable, with a high run-to-run variation.
+We notice that M3, M4 and M5 training can be relatively instable, with a high run-to-run variation. It can be mitigated by using a learning rate of 1e-4 instead of 1e-5 as discussed in the rebuttal stage of ICML. With that, generally we would see the training speed of M3, M4, and M5 are comparable. It generally holds true that M4 and M5 learn to navigate the maze faster than M3. 
 
 > Due to a lack of seed in earlier runs, for absolute reproducibility of Fig 2, we have provided the M3, M4, and M5 models trained and presented in the CCN and ICML paper in `Fig3_model` folder. 
 ```
