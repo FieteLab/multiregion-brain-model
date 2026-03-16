@@ -3,7 +3,7 @@ cd "$(dirname "$0")/.." || exit 1
 
 # Path to your conda setup script (adjust if needed)
 CONDA_ENV="towertask"
-BASE_SEED=25
+BASE_SEED=42
 
 # Create a variable for the log directory
 LOG_error_DIR="logs/model/error"
@@ -21,7 +21,7 @@ submit_job() {
            --job-name="${trial}" \
            --output="$LOG_output_DIR/${trial}.log" \
            --error="$LOG_error_DIR/${trial}.log" \
-           --wrap="source /cm/shared/openmind/anaconda/3-2022.05/etc/profile.d/conda.sh && conda activate $CONDA_ENV && \
+           --wrap="source /usr/people/yx7967/miniconda3/etc/profile.d/conda.sh && conda activate $CONDA_ENV && \
             sleep 10 && \
                    echo 'Job started at: ' \$(date) > $LOG_output_DIR/${trial}.log && \
                    echo 'SLURM Job ID: ' \$SLURM_JOB_ID >> $LOG_output_DIR/${trial}.log && \
@@ -67,29 +67,30 @@ for i in 1 2 3; do
     SEED=$((BASE_SEED + i))
 
     # ----------------------------------------
-    # M1–M5: Paper default uses 5e-4
+    # M1–M5: Paper default uses 5e-4, but 1e-4 is recommended for stability
     # ----------------------------------------
-    for lr in 0.001; do
+    for lr in 0.0001; do
         submit_job "M1_trial_${i}_lr${lr}" \
             "$M1 --trial_name icml_M1_trial_${i}_lr${lr} --seed $SEED --learning_rate $lr --num_episodes 20000"
         
-        # submit_job "M2_trial_${i}_lr${lr}" \
-        #     "$M2 --trial_name icml_M2_trial_${i}_lr${lr} --seed $SEED --learning_rate $lr --num_episodes 20000"
+        submit_job "M2_trial_${i}_lr${lr}" \
+            "$M2 --trial_name icml_M2_trial_${i}_lr${lr} --seed $SEED --learning_rate $lr --num_episodes 20000"
         
-        # submit_job "M3_trial_${i}_lr${lr}" \
-        #     "$M3 --trial_name icml_M3_trial_${i}_lr${lr} --seed $SEED --learning_rate $lr --num_episodes 20000"
+        submit_job "M3_trial_${i}_lr${lr}" \
+            "$M3 --trial_name icml_M3_trial_${i}_lr${lr} --seed $SEED --learning_rate $lr --num_episodes 20000"
         
-        # submit_job "M4_trial_${i}_lr${lr}" \
-        #     "$M4 --trial_name icml_M4_trial_${i}_lr${lr} --seed $SEED --learning_rate $lr --num_episodes 20000"
+        submit_job "M4_trial_${i}_lr${lr}" \
+            "$M4 --trial_name icml_M4_trial_${i}_lr${lr} --seed $SEED --learning_rate $lr --num_episodes 20000"
         
-        # submit_job "M5_trial_${i}_lr${lr}" \
-        #     "$M5 --trial_name icml_M5_trial_${i}_lr${lr} --seed $SEED --learning_rate $lr --num_episodes 20000"
+        submit_job "M5_trial_${i}_lr${lr}" \
+            "$M5 --trial_name icml_M5_trial_${i}_lr${lr} --seed $SEED --learning_rate $lr --num_episodes 20000"
     done
 
     # -----------------------------------------------------
     # M0plus and M0: Paper default uses 1e-4
     # -----------------------------------------------------
     # for lr in 0.001 0.0001 0.0005 0.00005; do
+    # for lr in 0.0001; do
     #     # M0plus
     #     submit_job "rebuttal_m5size_bothv_M0_trial_${i}_lr${lr}" \
     #         "$M0plus --trial_name rebuttal_m5size_bothv_M0_trial_${i}_lr${lr} \
