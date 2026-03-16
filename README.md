@@ -71,27 +71,53 @@ with changes to $SEED and $lr.
 
 > p.s. For potential confusion, when the assignments of all three grid modules are `position`, we update each module with the MLP-predicted evidence velocity in `train.py` in each step of training. Otherwise, for cases like `--grid_assignment position position evidence`, there will be no extra injection of evidence velocity to positional modules. The code currently assumes there are always three grid modules. 
 
-## Reproducibility Note with Trained Models
-We recently notice that both M4 and M5 training can be relatively instable, with a high run-to-run variation.
+## Fig. 3
+We recently notice that M3, M4 and M5 training can be relatively instable, with a high run-to-run variation.
 
-> Due to a lack of seed in earlier runs, for absolute reproducibility of Fig 2, we have provided the M3, M4, and M5 models trained and presented in the CCN and ICML paper in `ccn_model` folder. 
+> Due to a lack of seed in earlier runs, for absolute reproducibility of Fig 2, we have provided the M3, M4, and M5 models trained and presented in the CCN and ICML paper in `Fig3_model` folder. 
 ```
 'M3: joint g, nonmix p': [
-         'ccn_model/train_q=1/with_mlp_mlp_input_typesensory32/p/HaSH_original/no_sensory/seq20/maxTower5/fov5/RNN32/position_position_position_7_8_11/0.0005/M3_trial_1/800',
-         'ccn_model/train_q=1/with_mlp_mlp_input_typesensory32/p/HaSH_original/no_sensory/seq20/maxTower5/fov5/RNN32/position_position_position_7_8_11/0.0005/M3_trial_2/800',
-         'ccn_model/train_q=1/with_mlp_mlp_input_typesensory32/p/HaSH_original/no_sensory/seq20/maxTower5/fov5/RNN32/position_position_position_7_8_11/0.0005/M3_trial_3/800'
+         'Fig3_model/train_q=1/with_mlp_mlp_input_typesensory32/p/HaSH_original/no_sensory/seq20/maxTower5/fov5/RNN32/position_position_position_7_8_11/0.0005/M3_trial_1/800',
+         'Fig3_model/train_q=1/with_mlp_mlp_input_typesensory32/p/HaSH_original/no_sensory/seq20/maxTower5/fov5/RNN32/position_position_position_7_8_11/0.0005/M3_trial_2/800',
+         'Fig3_model/train_q=1/with_mlp_mlp_input_typesensory32/p/HaSH_original/no_sensory/seq20/maxTower5/fov5/RNN32/position_position_position_7_8_11/0.0005/M3_trial_3/800'
      ],
  'M4: disjoint g, mix p': [
-         'ccn_model/train_q=1/with_mlp_mlp_input_typesensory32/p/HaSH_star/no_sensory/seq20/maxTower5/fov5/RNN32/position_position_evidence_7_8_11/0.0005/M4_trial_1/800',
-         'ccn_model/train_q=1/with_mlp_mlp_input_typesensory32/p/HaSH_star/no_sensory/seq20/maxTower5/fov5/RNN32/position_position_evidence_7_8_11/0.0005/M4_trial_2/800',
-         'ccn_model/train_q=1/with_mlp_mlp_input_typesensory32/p/HaSH_star/no_sensory/seq20/maxTower5/fov5/RNN32/position_position_evidence_7_8_11/0.0005/M4_trial_3/800',
+         'Fig3_model/train_q=1/with_mlp_mlp_input_typesensory32/p/HaSH_star/no_sensory/seq20/maxTower5/fov5/RNN32/position_position_evidence_7_8_11/0.0005/M4_trial_1/800',
+         'Fig3_model/train_q=1/with_mlp_mlp_input_typesensory32/p/HaSH_star/no_sensory/seq20/maxTower5/fov5/RNN32/position_position_evidence_7_8_11/0.0005/M4_trial_2/800',
+         'Fig3_model/train_q=1/with_mlp_mlp_input_typesensory32/p/HaSH_star/no_sensory/seq20/maxTower5/fov5/RNN32/position_position_evidence_7_8_11/0.0005/M4_trial_3/800',
      ],
 
 'M5: joint g, mix p': [
-        'ccn_model/train_q=1/with_mlp_mlp_input_typesensory32/p/HaSH_star/no_sensory/seq20/maxTower5/fov5/RNN32/position_position_position_7_8_11/0.0005/M5_trial_1/800',
-        'ccn_model/train_q=1/with_mlp_mlp_input_typesensory32/p/HaSH_star/no_sensory/seq20/maxTower5/fov5/RNN32/position_position_position_7_8_11/0.0005/M5_trial_2/800',
-        'ccn_model/train_q=1/with_mlp_mlp_input_typesensory32/p/HaSH_star/no_sensory/seq20/maxTower5/fov5/RNN32/position_position_position_7_8_11/0.0005/M5_trial_3/800',
+        'Fig3_model/train_q=1/with_mlp_mlp_input_typesensory32/p/HaSH_star/no_sensory/seq20/maxTower5/fov5/RNN32/position_position_position_7_8_11/0.0005/M5_trial_1/800',
+        'Fig3_model/train_q=1/with_mlp_mlp_input_typesensory32/p/HaSH_star/no_sensory/seq20/maxTower5/fov5/RNN32/position_position_position_7_8_11/0.0005/M5_trial_2/800',
+        'Fig3_model/train_q=1/with_mlp_mlp_input_typesensory32/p/HaSH_star/no_sensory/seq20/maxTower5/fov5/RNN32/position_position_position_7_8_11/0.0005/M5_trial_3/800',
     ],
+```
+
+### Fig. 6 
+Additionally, we provide the data used to produce Fig. 6 in `Fig6_data`. You may use it to run `analysis/non_linear_reduction` to obtain our results.
+
+The original `.mat` files for Fig. 6 are stored in a compressed archive to keep the repository size manageable.
+
+**Archive location**
+
+```
+Fig6_data/mat_files.tar.gz
+```
+
+**To extract the files**
+
+From the repository root, run:
+
+```
+tar -xzf Fig6_data/mat_files.tar.gz -C Fig6_data
+```
+
+This will extract:
+
+```
+Fig6_data/M4_1000trials_data_mlpModel.mat
+Fig6_data/M5_1000trials_data_mlpModel.mat
 ```
 
 ## 🏞️ Reproducing All Figures from the ICML Paper
